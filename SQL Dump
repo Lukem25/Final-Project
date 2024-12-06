@@ -1,0 +1,153 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Dec 06, 2024 at 02:02 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `habit_tracker`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `habit`
+--
+
+CREATE TABLE `habit` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `habit`
+--
+
+INSERT INTO `habit` (`id`, `user_id`, `name`, `description`, `created_at`) VALUES
+(11, 6, 'read', 'read', '2024-12-05 19:20:51'),
+(12, 6, 'run', 'run 1 mile', '2024-12-05 19:37:12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `habit_completion`
+--
+
+CREATE TABLE `habit_completion` (
+  `id` int(11) NOT NULL,
+  `habit_id` int(11) NOT NULL,
+  `completion_date` date DEFAULT curdate()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `role` enum('admin','regular_user') NOT NULL DEFAULT 'regular_user',
+  `is_admin` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `created_at`, `role`, `is_admin`) VALUES
+(2, 'jane_doe', 'jane@example.com', 'hashed_pw2', '2024-11-17 21:21:29', 'regular_user', 0),
+(3, 'alice_smith', 'alice@example.com', 'hashed_pw3', '2024-11-17 21:21:29', 'regular_user', 0),
+(4, '', 'testuser@example.com', '$2y$10$fgSQqxDMrT/VNQEjzmr2wuQvj.W7OFturzWSCGfKVwAVRYFacUap2', '2024-12-04 20:49:32', 'regular_user', 0),
+(6, '', 'testuser1@example.com', '$2y$10$mMCIcq8XEe/m6/lzhLT3NuPmqJA85m7kEtyC3P5RcTAkSrn6YIgz.', '2024-12-04 21:02:51', 'regular_user', 0),
+(7, '', 'testuser2@example.com', '$2y$10$OilaSeDq9cApsxYMqu8FMepGY/EYmblUF4fDHz1PLnRlNsnAYHO3K', '2024-12-04 21:10:36', 'regular_user', 0),
+(8, '', 'Lukem1@mymail.nku.edu', '$2y$10$MUv77A6aMEp1y862kYHLGOARG1fcvg8R6bT87kKX3jLkEcRtD69Zm', '2024-12-05 17:14:24', 'regular_user', 0),
+(9, '', 'admin@example.com', '$2y$10$tpMUB0gTLEpX4h3eZTpnH.pZc.VaH3yx.dbp3vFTahi8kmmzl217u', '2024-12-05 18:30:12', 'admin', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `habit`
+--
+ALTER TABLE `habit`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `habit_completion`
+--
+ALTER TABLE `habit_completion`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `habit_id` (`habit_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `habit`
+--
+ALTER TABLE `habit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `habit_completion`
+--
+ALTER TABLE `habit_completion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `habit`
+--
+ALTER TABLE `habit`
+  ADD CONSTRAINT `habit_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `habit_completion`
+--
+ALTER TABLE `habit_completion`
+  ADD CONSTRAINT `habit_completion_ibfk_1` FOREIGN KEY (`habit_id`) REFERENCES `habit` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
